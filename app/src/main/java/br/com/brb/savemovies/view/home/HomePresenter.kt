@@ -1,43 +1,59 @@
 package br.com.brb.savemovies.view.home
 
 import android.content.Context
-import br.com.brb.savemovies.model.Movie
-import br.com.brb.savemovies.persistence.MovieDatabase
-import android.os.AsyncTask
+import android.view.View
+import androidx.databinding.ObservableInt
+import androidx.lifecycle.LiveData
+import br.com.brb.savemovies.data.model.entity.Movie
+import br.com.brb.savemovies.data.datalocal.MovieDatabase
 
 
+class HomePresenter(private val context: Context, private var view: IHomeContract.View?) : IHomeContract.Presenter {
 
-class HomePresenter(private val context: Context, private val view: IHomeView) {
+    var listAdapter: HomeListAdapter? = null
 
-    val listMovie: MutableList<Movie> = mutableListOf()
+    var listMovieLive: LiveData<List<Movie>>?
+
+    var messageNotFoundVisibility = ObservableInt(View.VISIBLE)
+    var recyclerVisibility = ObservableInt(View.GONE)
+
+
+    override fun onDestroy() {
+        view = null
+    }
+
+    init {
+        listAdapter = HomeListAdapter(this, mutableListOf())
+        listMovieLive = MovieDatabase.getInstance(context)?.movieDao()?.allMovies
+    }
+
 
     fun selectMovies() {
-        SelectAsyncTask(this).execute()
+        listMovieLive = MovieDatabase.getInstance(context)?.movieDao()?.allMovies
     }
 
-    private fun getFavoritesMovies() {
+    fun filter(filterText: String) {
+        listAdapter?.filter?.filter(filterText)
+    }
 
-        val movies: MutableList<Movie>? = MovieDatabase.getInstance(context)?.movieDao()?.getAllMovies()
+    fun setItems(list: List<Movie>) {
+        if (list.isEmpty()) {
+            changeView(View.GONE, View.VISIBLE)
 
-        movies?.let {
-            listMovie.clear()
-
-            if (it.isEmpty()) {
-                view.callbackSuccessEmptyGetMovie()
-            } else {
-                listMovie.addAll(it)
-                view.callbackSuccessGetMovie(listMovie)
-            }
+        } else {
+            changeView(View.VISIBLE, View.GONE)
+            listAdapter?.setItems(list)
         }
     }
 
-    private class SelectAsyncTask internal constructor(
-        private val presenter: HomePresenter) : AsyncTask<Void, Void, Void>() {
-
-        override fun doInBackground(vararg params: Void): Void? {
-            presenter.getFavoritesMovies()
-            return null
-        }
-
+    fun onItemClick(model: Movie) {
+        view?.onItemClick(model)
     }
+
+
+    private fun changeView(recycler: Int, notFound: Int) {
+        recyclerVisibility.set(recycler)
+        messageNotFoundVisibility.set(notFound)
+    }
+
 }

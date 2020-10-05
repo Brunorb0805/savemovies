@@ -1,41 +1,9 @@
-package br.com.brb.savemovies.model
+package br.com.brb.savemovies.data.model.dto
 
-import android.widget.ImageView
-import androidx.annotation.NonNull
-import androidx.databinding.BindingAdapter
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.google.gson.annotations.SerializedName
-import java.io.Serializable
 
 
-@Entity
-class Movie : Serializable {
-
-    companion object {
-        @JvmStatic
-        @BindingAdapter("posterRounded")
-        fun loadRoundedImage(view: ImageView, imageUrl: String?) {
-            if (imageUrl != null && imageUrl.isNotEmpty() && imageUrl != "N/A") {
-                Glide.with(view.context)
-                    .load(imageUrl)
-                    .apply(RequestOptions.circleCropTransform())
-                    .into(view)
-            }
-        }
-
-        @JvmStatic
-        @BindingAdapter("poster")
-        fun loadImage(view: ImageView, imageUrl: String?) {
-            if (imageUrl != null && imageUrl.isNotEmpty() && imageUrl != "N/A") {
-                Glide.with(view.context)
-                    .load(imageUrl)
-                    .into(view)
-            }
-        }
-    }
+class MovieDto {
 
     @SerializedName("Title")
     var title: String? = null
@@ -86,8 +54,6 @@ class Movie : Serializable {
 
     var imdbRating: String? = null
 
-    @NonNull
-    @PrimaryKey
     var imdbID: String? = null
 
     @SerializedName("Type")

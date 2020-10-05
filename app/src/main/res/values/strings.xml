@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Save Movies</string>
     <string name="description_image_splash">Imagem da tela de apresentação</string>
+    <string name="description_like">Curtir</string>
+    <string name="description_search">Procura</string>
+    <string name="description_more">Mais</string>
     <string name="poster_descrition">Poster do filme</string>
     <string name="like_descrition">Botão gostei</string>
 
@@ -28,6 +31,7 @@
     <string name="msg_no_internet">Isso acontece quando você está desconectado. \n Por favor, verifique sua conexão e tente novamente.</string>
     <string name="msg_movie_saved">Salvo!</string>
     <string name="msg_movie_delete">Removido!</string>
+    <string name="msg_unexpected_error">Erro inesperado!</string>
     <string name="msg_movie_wait">Espere e tente novamente…</string>
     <string name="rounded_separator"> &#8226; </string>
 

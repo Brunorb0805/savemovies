@@ -1,63 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:bind="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
         <variable
-                name="movie"
-                type="br.com.brb.savemovies.model.Movie"/>
+            name="model"
+            type="br.com.brb.savemovies.data.model.entity.Movie" />
+
+        <variable
+            name="presenter"
+            type="br.com.brb.savemovies.view.search.SearchPresenter" />
 
     </data>
 
 
     <RelativeLayout
-            android:id="@+id/main_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/transparent"
-            android:orientation="vertical">
+        android:id="@+id/main_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:onClick="@{() -> presenter.onItemClick(model)}"
+        android:orientation="vertical">
 
         <ImageView
-                android:id="@+id/posterImageView"
-                android:layout_width="74dp"
-                android:layout_height="110dp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="15dp"
-                android:contentDescription="@string/poster_descrition"
-                android:layout_marginTop="5dp"
-                android:src="@drawable/no_poster"
-                app:posterRounded="@{movie.poster}"/>
+            android:id="@+id/posterImageView"
+            android:layout_width="74dp"
+            android:layout_height="110dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            android:contentDescription="@string/poster_descrition"
+            android:src="@drawable/no_poster"
+            app:posterRounded="@{model.poster}" />
 
         <TextView
-                android:id="@+id/titleTextView"
-                style="@style/TextTitleList"
-                android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                android:layout_toEndOf="@+id/posterImageView"
-                android:text="@{movie.title}"/>
+            android:id="@+id/titleTextView"
+            style="@style/TextTitleList"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_toEndOf="@+id/posterImageView"
+            android:text="@{model.title}" />
 
         <TextView
-                android:id="@+id/typeTextView"
-                style="@style/TextInfoList"
-                android:layout_below="@+id/titleTextView"
-                android:layout_toEndOf="@+id/posterImageView"
-                android:text="@{movie.type}"/>
+            android:id="@+id/typeTextView"
+            style="@style/TextInfoList"
+            android:layout_below="@+id/titleTextView"
+            android:layout_toEndOf="@+id/posterImageView"
+            android:text="@{model.type}" />
 
         <TextView
-                android:id="@+id/yearTextView"
-                style="@style/TextInfoList"
-                android:layout_below="@+id/typeTextView"
-                android:layout_toEndOf="@+id/posterImageView"
-                android:text="@{movie.year}"/>
+            android:id="@+id/yearTextView"
+            style="@style/TextInfoList"
+            android:layout_below="@+id/typeTextView"
+            android:layout_toEndOf="@+id/posterImageView"
+            android:text="@{model.year}" />
 
         <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_below="@+id/posterImageView"
-                android:layout_marginEnd="15dp"
-                android:layout_marginStart="100dp"
-                android:background="@color/black"/>
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/posterImageView"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:background="@color/black" />
 
     </RelativeLayout>
 

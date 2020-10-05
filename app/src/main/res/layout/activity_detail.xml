@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
                 name="movie"
-                type="br.com.brb.savemovies.model.Movie"/>
+                type="br.com.brb.savemovies.data.model.entity.Movie" />
+
+        <variable
+            name="presenter"
+            type="br.com.brb.savemovies.view.detail.DetailPresenter" />
+
     </data>
 
     <RelativeLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/background_header"
@@ -23,32 +30,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                <!--<TextView-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/info_title"-->
-                <!--android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"-->
-                <!--android:textColor="@android:color/white"/>-->
-
-                <!--<RelativeLayout-->
-                <!--android:id="@+id/likedRelativeLayout"-->
-                <!--android:layout_width="60dp"-->
-                <!--android:layout_height="match_parent"-->
-                <!--android:layout_alignParentEnd="true"-->
-                <!--android:layout_centerVertical="true">-->
-
                 <ImageView
                         android:id="@+id/likedImageView"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
                         android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
                         android:layout_centerVertical="true"
-                        android:src="@drawable/ic_no_like"
-                        android:contentDescription="@string/like_descrition"/>
-
-                <!--</RelativeLayout>-->
+                        android:contentDescription="@string/like_descrition"
+                        android:src="@drawable/ic_no_like" />
 
             </RelativeLayout>
 
@@ -61,7 +51,7 @@
                 android:layout_height="match_parent"
                 android:layout_below="@+id/toolbar"
                 android:gravity="center"
-                android:visibility="gone">
+                android:visibility="@{presenter.loadingVisibility}">
 
             <com.wang.avi.AVLoadingIndicatorView
                     android:id="@+id/loader"
@@ -71,7 +61,7 @@
                     android:layout_centerHorizontal="true"
                     android:visibility="visible"
                     app:indicatorColor="@color/colorAccent"
-                    app:indicatorName="BallPulseIndicator"/>
+                    app:indicatorName="BallPulseIndicator" />
 
         </RelativeLayout>
 
@@ -81,9 +71,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/toolbar"
-                android:visibility="gone">
+                android:visibility="@{presenter.messageNoInternetVisibility}">
 
-            <include layout="@layout/fragment_no_internet"/>
+            <include layout="@layout/fragment_no_internet" />
 
         </RelativeLayout>
 
@@ -97,7 +87,7 @@
                 android:fadingEdgeLength="30dp"
                 android:requiresFadingEdge="vertical"
                 android:scrollbars="none"
-                android:visibility="visible">
+                android:visibility="@{presenter.infoVisibility}">
 
             <RelativeLayout
                     android:id="@+id/searchRelativeLayout"
@@ -116,7 +106,7 @@
                             android:layout_height="match_parent"
                             android:contentDescription="@string/app_name"
                             android:scaleType="centerCrop"
-                            app:poster="@{movie.poster}"/>
+                            app:poster="@{movie.poster}" />
 
                     <ImageView
                             android:id="@+id/shadowImageView"
@@ -124,7 +114,7 @@
                             android:layout_height="match_parent"
                             android:contentDescription="@string/app_name"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/shadow_poster_movie"/>
+                            android:src="@drawable/shadow_poster_movie" />
 
                     <LinearLayout
                             android:id="@+id/taxLinearLayout"
@@ -139,10 +129,10 @@
                                 android:layout_weight="2"
                                 android:gravity="start"
                                 android:padding="@dimen/activity_horizontal_margin"
+                                android:text="@{movie.title}"
                                 android:textColor="@color/white"
                                 android:textSize="22sp"
-                                android:textStyle="bold"
-                                android:text="@{movie.title}"/>
+                                android:textStyle="bold" />
 
 
                         <TextView
@@ -152,10 +142,10 @@
                                 android:layout_weight="1"
                                 android:gravity="end|bottom"
                                 android:padding="@dimen/activity_horizontal_margin"
+                                android:text="@{movie.year}"
                                 android:textAllCaps="true"
                                 android:textColor="@color/lightGray"
-                                android:textSize="14sp"
-                                android:text="@{movie.year}"/>
+                                android:textSize="14sp" />
 
                     </LinearLayout>
 
@@ -179,8 +169,8 @@
                                 style="@style/TextDetailsValue"
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
-                                android:textAllCaps="false"
-                                android:text="@{movie.genre}"/>
+                                android:text="@{movie.genre}"
+                                android:textAllCaps="false" />
 
 
                         <TextView
@@ -188,22 +178,23 @@
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
                                 android:gravity="end"
-                                android:textAllCaps="false"
-                                android:text="@{movie.runtime}"/>
+                                android:text="@{movie.runtime}"
+                                android:textAllCaps="false" />
 
                     </LinearLayout>
 
-                    <View android:layout_width="match_parent"
-                          android:layout_height="1dp"
-                          android:layout_marginTop="10dp"
-                          android:background="@color/colorAccent"/>
+                    <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@color/colorAccent" />
 
 
                     <TextView
                             style="@style/TextDetailsValue"
-                            android:layout_marginBottom="10dp"
                             android:layout_marginTop="15dp"
-                            android:text="@{movie.plot}"/>
+                            android:layout_marginBottom="10dp"
+                            android:text="@{movie.plot}" />
 
 
                     <LinearLayout
@@ -214,11 +205,11 @@
 
                         <TextView
                                 style="@style/TextDetailsTitle"
-                                android:text="@string/tv_actors"/>
+                                android:text="@string/tv_actors" />
 
                         <TextView
                                 style="@style/TextDetailsValue"
-                                android:text="@{movie.actors}"/>
+                                android:text="@{movie.actors}" />
 
                     </LinearLayout>
 
@@ -231,11 +222,11 @@
 
                         <TextView
                                 style="@style/TextDetailsTitle"
-                                android:text="@string/tv_directed_by"/>
+                                android:text="@string/tv_directed_by" />
 
                         <TextView
                                 style="@style/TextDetailsValue"
-                                android:text="@{movie.director}"/>
+                                android:text="@{movie.director}" />
 
                     </LinearLayout>
 
@@ -248,11 +239,11 @@
 
                         <TextView
                                 style="@style/TextDetailsTitle"
-                                android:text="@string/tv_written_by"/>
+                                android:text="@string/tv_written_by" />
 
                         <TextView
                                 style="@style/TextDetailsValue"
-                                android:text="@{movie.writer}"/>
+                                android:text="@{movie.writer}" />
 
                     </LinearLayout>
 
@@ -265,11 +256,11 @@
 
                         <TextView
                                 style="@style/TextDetailsTitle"
-                                android:text="@string/tv_produced_by"/>
+                                android:text="@string/tv_produced_by" />
 
                         <TextView
                                 style="@style/TextDetailsValue"
-                                android:text="@{movie.production}"/>
+                                android:text="@{movie.production}" />
 
                     </LinearLayout>
 
@@ -282,11 +273,11 @@
 
                         <TextView
                                 style="@style/TextDetailsTitle"
-                                android:text="@string/tv_country_language"/>
+                                android:text="@string/tv_country_language" />
 
                         <TextView
                                 style="@style/TextDetailsValue"
-                                android:text='@{movie.country + "/" + movie.language}'/>
+                                android:text='@{movie.country + "/" + movie.language}' />
 
                     </LinearLayout>
 
@@ -299,11 +290,11 @@
 
                         <TextView
                                 style="@style/TextDetailsTitle"
-                                android:text="@string/tv_released"/>
+                                android:text="@string/tv_released" />
 
                         <TextView
                                 style="@style/TextDetailsValue"
-                                android:text="@{movie.released}"/>
+                                android:text="@{movie.released}" />
 
                     </LinearLayout>
 
@@ -316,11 +307,11 @@
 
                         <TextView
                                 style="@style/TextDetailsTitle"
-                                android:text="@string/tv_awards"/>
+                                android:text="@string/tv_awards" />
 
                         <TextView
                                 style="@style/TextDetailsValue"
-                                android:text="@{movie.awards}"/>
+                                android:text="@{movie.awards}" />
 
                     </LinearLayout>
 
@@ -333,11 +324,11 @@
 
                         <TextView
                                 style="@style/TextDetailsTitle"
-                                android:text="@string/tv_boxoffice"/>
+                                android:text="@string/tv_boxoffice" />
 
                         <TextView
                                 style="@style/TextDetailsValue"
-                                android:text="@{movie.boxOffice}"/>
+                                android:text="@{movie.boxOffice}" />
 
                     </LinearLayout>
 
@@ -350,11 +341,11 @@
 
                         <TextView
                                 style="@style/TextDetailsTitle"
-                                android:text="@string/tv_imdb_rating"/>
+                                android:text="@string/tv_imdb_rating" />
 
                         <TextView
                                 style="@style/TextDetailsValue"
-                                android:text="@{movie.imdbRating}"/>
+                                android:text="@{movie.imdbRating}" />
 
                     </LinearLayout>
 

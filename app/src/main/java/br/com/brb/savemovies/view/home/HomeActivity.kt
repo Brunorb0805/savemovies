@@ -6,21 +6,23 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.brb.savemovies.R
-import br.com.brb.savemovies.model.Movie
+import br.com.brb.savemovies.databinding.ActivityHomeBinding
+import br.com.brb.savemovies.data.model.entity.Movie
+import br.com.brb.savemovies.view.detail.DetailsActivity
 import br.com.brb.savemovies.view.search.SearchActivity
 import kotlinx.android.synthetic.main.activity_home.*
 
-class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener, IHomeView {
+
+class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener, IHomeContract.View {
 
     //region Atributes
-    private lateinit var listAdapter: HomeListAdapter
-
     private var presenter: HomePresenter? = null
+    private var binding: ActivityHomeBinding? = null
     //endregion
 
 
@@ -28,7 +30,7 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener, IHomeV
 
         var isNewItem = false
 
-        fun newInstance(context: Context) : Intent {
+        fun newInstance(context: Context): Intent {
             return Intent(context, HomeActivity::class.java)
         }
     }
@@ -37,23 +39,29 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener, IHomeV
     //region Override Methods
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
         presenter = HomePresenter(this, this)
+
+        binding?.presenter = presenter
 
         init()
     }
 
     override fun onResume() {
         super.onResume()
-        if (isNewItem) {
-            presenter?.selectMovies()
-            isNewItem = false
-        }
+
+        presenter?.selectMovies()
+    }
+
+    override fun onDestroy() {
+        presenter?.onDestroy()
+
+        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_search, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
 
         val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager
         val searchMenuItem = menu.findItem(R.id.action_search)
@@ -75,29 +83,19 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener, IHomeV
         return super.onOptionsItemSelected(item)
     }
 
-    override fun callbackSuccessGetMovie(listMovies: List<Movie>) {
-        runOnUiThread {
-            listAdapter.notifyDataSetChanged()
-            recyclerviewRelativeLayout?.visibility = View.VISIBLE
-            alertNoFavoriteRelativeLayout?.visibility = View.GONE
-        }
-    }
-
-    override fun callbackSuccessEmptyGetMovie() {
-        runOnUiThread {
-            listAdapter.notifyDataSetChanged()
-            recyclerviewRelativeLayout?.visibility = View.GONE
-            alertNoFavoriteRelativeLayout?.visibility = View.VISIBLE
-        }
-    }
-
     override fun onQueryTextSubmit(query: String): Boolean {
         return false
     }
 
     override fun onQueryTextChange(newText: String): Boolean {
-        listAdapter.filter.filter(newText)
+        presenter?.filter(newText)
+
         return true
+    }
+
+    override fun onItemClick(model: Movie) {
+        startActivity(DetailsActivity.newInstance(this, model.imdbID))
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out)
     }
     //endregion
 
@@ -106,8 +104,7 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener, IHomeV
     private fun init() {
         initToolbar()
         initRecyclerView()
-
-        presenter?.selectMovies()
+        setupListUpdate()
     }
 
     private fun initToolbar() {
@@ -117,12 +114,16 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener, IHomeV
     }
 
     private fun initRecyclerView() {
-        listAdapter = HomeListAdapter(this, presenter!!.listMovie)
-
         val mLayoutManager = LinearLayoutManager(this)
 
         movieRecyclerView?.layoutManager = mLayoutManager
-        movieRecyclerView?.adapter = listAdapter
+        movieRecyclerView?.adapter = presenter?.listAdapter
+    }
+
+    private fun setupListUpdate() {
+        presenter?.listMovieLive?.observe(this, {
+            presenter?.setItems(it)
+        })
     }
 
     private fun goSearchActivity() {
@@ -130,4 +131,5 @@ class HomeActivity : AppCompatActivity(), SearchView.OnQueryTextListener, IHomeV
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_down)
     }
     //endregion
+
 }

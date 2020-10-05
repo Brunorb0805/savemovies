@@ -8,12 +8,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import br.com.brb.savemovies.R
 import br.com.brb.savemovies.databinding.ItemHomeMovieListBinding
-import br.com.brb.savemovies.model.Movie
-import br.com.brb.savemovies.view.detail.DetailsActivity
+import br.com.brb.savemovies.data.model.entity.Movie
 import java.util.*
 
-class HomeListAdapter(private val activity: HomeActivity, private val listMovies: MutableList<Movie>) :
-    RecyclerView.Adapter<HomeListAdapter.ListHomeViewHolder>(), Filterable {
+class HomeListAdapter(
+    private val presenter: HomePresenter,
+    private val listMovies: MutableList<Movie>
+) : RecyclerView.Adapter<HomeListAdapter.ListHomeViewHolder>(), Filterable {
 
 
     private var filteredListMovies: MutableList<Movie> = listMovies
@@ -23,12 +24,18 @@ class HomeListAdapter(private val activity: HomeActivity, private val listMovies
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListHomeViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding =
-            DataBindingUtil.inflate<ItemHomeMovieListBinding>(inflater, R.layout.item_home_movie_list, parent, false)
+            DataBindingUtil.inflate<ItemHomeMovieListBinding>(
+                inflater,
+                R.layout.item_home_movie_list,
+                parent,
+                false
+            )
 
         return ListHomeViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ListHomeViewHolder, position: Int) = holder.bind(filteredListMovies[position])
+    override fun onBindViewHolder(holder: ListHomeViewHolder, position: Int) =
+        holder.bind(filteredListMovies[position])
 
     override fun getItemCount() = filteredListMovies.size
 
@@ -36,6 +43,14 @@ class HomeListAdapter(private val activity: HomeActivity, private val listMovies
         if (movieFilter == null) movieFilter = MoviesFilter()
 
         return movieFilter!!
+    }
+
+
+    fun setItems(list: List<Movie>) {
+        listMovies.clear()
+
+        listMovies.addAll(list)
+        notifyDataSetChanged()
     }
 
 
@@ -49,13 +64,14 @@ class HomeListAdapter(private val activity: HomeActivity, private val listMovies
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(movie: Movie) {
-            binding.movie = movie
+            binding.model = movie
+            binding.presenter = presenter
             binding.executePendingBindings()
 
-            binding.root.setOnClickListener {
-                activity.startActivity(DetailsActivity.newInstance(activity, movie.imdbID!!))
-                activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out)
-            }
+//            binding.root.setOnClickListener {
+//                activity.startActivity(DetailsActivity.newInstance(activity, movie.imdbID!!))
+//                activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out)
+//            }
         }
     }
 

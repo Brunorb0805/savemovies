@@ -1,17 +1,17 @@
-package br.com.brb.savemovies.model
+package br.com.brb.savemovies.data.model.dto
 
 import com.google.gson.annotations.SerializedName
+
 
 class SearchDto {
 
     @SerializedName("Search")
-    var search: MutableList<Movie>? = null
+    var search: MutableList<MovieDto>? = null
 
     @SerializedName("Response")
     var response: Boolean = false
 
     @SerializedName("Error")
     var error: String? = null
-
 
 }

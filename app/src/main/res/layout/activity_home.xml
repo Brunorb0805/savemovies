@@ -1,46 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="br.com.brb.savemovies.view.home.HomePresenter" />
+
+    </data>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/background_header"
         android:fitsSystemWindows="true">
 
-
-    <androidx.appcompat.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
 
-    <RelativeLayout
+        <RelativeLayout
             android:id="@+id/alertNoFavoriteRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
-            android:visibility="gone">
+            android:visibility="@{presenter.messageNotFoundVisibility}">
 
-        <include layout="@layout/fragment_no_favorite"/>
+            <include layout="@layout/fragment_no_favorite" />
 
-    </RelativeLayout>
+        </RelativeLayout>
 
 
-    <RelativeLayout
+        <RelativeLayout
             android:id="@+id/recyclerviewRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
-            android:visibility="visible">
+            android:visibility="@{presenter.recyclerVisibility}">
 
-        <androidx.recyclerview.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/movieRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:dividerHeight="0.8dp"
                 android:requiresFadingEdge="vertical"
-                android:scrollbars="none"/>
+                android:scrollbars="none"
+                tools:listitem="@layout/item_home_movie_list" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
-</RelativeLayout>
+</layout>

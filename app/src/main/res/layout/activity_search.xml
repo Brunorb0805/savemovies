@@ -1,98 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/background_header"
-                android:fitsSystemWindows="true">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="br.com.brb.savemovies.view.search.SearchPresenter" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_header"
+        android:fitsSystemWindows="true">
 
 
-    <androidx.appcompat.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+<!--        <androidx.appcompat.widget.Toolbar-->
+<!--            android:id="@+id/toolbar"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="?attr/actionBarSize"-->
+<!--            app:popupTheme="@style/AppTheme.PopupOverlay">-->
+
+<!--            <RelativeLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content">-->
+
+<!--                <EditText-->
+<!--                    android:id="@+id/searchEditText"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginEnd="15dp"-->
+<!--                    android:layout_toStartOf="@+id/liked_imageview"-->
+<!--                    android:hint="@string/hint_search"-->
+<!--                    android:imeOptions="actionDone"-->
+<!--                    android:inputType="textPersonName"-->
+<!--                    android:drawableEnd="@drawable/ic_search"-->
+<!--                    android:maxLines="1"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textColorHint="@color/white" />-->
+
+<!--&lt;!&ndash;                <ImageView&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:id="@+id/likedImageView"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_width="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_alignParentEnd="true"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_centerVertical="true"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:layout_margin="11dp"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:contentDescription="@string/description_like"&ndash;&gt;-->
+<!--&lt;!&ndash;                    android:src="@drawable/ic_search" />&ndash;&gt;-->
+
+<!--            </RelativeLayout>-->
+
+<!--        </androidx.appcompat.widget.Toolbar>-->
+
 
         <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            <EditText
-                    android:id="@+id/searchEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="15dp"
-                    android:hint="@string/hint_search"
-                    android:imeOptions="actionDone"
-                    android:inputType="textPersonName"
-                    android:layout_toStartOf="@+id/liked_imageview"
-                    android:maxLines="1"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"/>
-
-            <ImageView
-                    android:id="@+id/likedImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:layout_margin="11dp"
-                    android:src="@drawable/ic_search"/>
-
-        </RelativeLayout>
-
-    </androidx.appcompat.widget.Toolbar>
-
-
-    <RelativeLayout
             android:id="@+id/alertNotFoundRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            android:layout_below="@+id/toolbar">
+            android:layout_below="@+id/toolbar"
+            android:visibility="@{presenter.messageNotFoundVisibility}">
 
-        <include layout="@layout/fragment_not_found"/>
+            <include layout="@layout/fragment_not_found" />
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <RelativeLayout
+        <RelativeLayout
             android:id="@+id/alertNoInternetRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            android:layout_below="@+id/toolbar">
+            android:layout_below="@+id/toolbar"
+            android:visibility="@{presenter.messageNotInternetVisibility}">
 
-        <include layout="@layout/fragment_no_internet"/>
+            <include layout="@layout/fragment_no_internet" />
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/moviesRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/toolbar"
             android:dividerHeight="0.8dp"
             android:requiresFadingEdge="vertical"
-            android:scrollbars="none"/>
+            android:scrollbars="none" />
 
 
-    <LinearLayout
+        <LinearLayout
             android:id="@+id/loaderLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:visibility="gone"
             android:background="@color/colorPrimaryDark"
-            android:gravity="center">
+            android:gravity="center"
+            android:visibility="@{presenter.loadingVisibility}">
 
-        <com.wang.avi.AVLoadingIndicatorView
+            <com.wang.avi.AVLoadingIndicatorView
                 android:id="@+id/loader"
                 style="@style/AVLoadingIndicatorView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:indicatorColor="@color/colorAccent"
-                app:indicatorName="BallPulseIndicator"/>
+                app:indicatorName="BallPulseIndicator" />
 
-    </LinearLayout>
+        </LinearLayout>
 
-</RelativeLayout>
+    </RelativeLayout>
+
+</layout>
